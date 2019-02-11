@@ -5,7 +5,7 @@ This helper assumes a graphql context containing %{current_user: %{is_admin: tru
 
 ## Usage
 
-In your context created/modified by ```mix phx.gen.context Post posts title``` (in this example "Posts"), add 
+In your context created/modified by `mix phx.gen.context Post posts title` (in this example "Posts"), add 
 
 elixir```
 use ReactAdminHelper
