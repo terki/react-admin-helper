@@ -44,7 +44,6 @@ In your graphql schema, define your :post and add
       resolve(&Resolvers.Post.delete_post/3)
     end
   end
-end
 ```
 
 ## Installation

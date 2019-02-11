@@ -1,4 +1,4 @@
-defmodule ReactAdminHelper do
+defmodule ReactAdminHelper.ReactAdminHelper do
   @moduledoc """
   Documentation for ReactAdminHelper.
   """
