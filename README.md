@@ -7,14 +7,14 @@ This helper assumes a graphql context containing %{current_user: %{is_admin: tru
 
 In your context created/modified by `mix phx.gen.context Post posts title` (in this example "Posts"), add 
 
-elixir```
+```elixir
 use ReactAdminHelper
 react_admin_context(Post, "posts", Repo)
 ```
 
 Create your resolver like so
 
-elixir```
+```elixir
 defmodule MyProjectCoreWeb.Resolvers.Post do
   use ReactAdminHelper.ReactAdminHelper
   react_admin_query_resolver(:post, :posts, MyProjectCore.Posts)
@@ -24,7 +24,7 @@ end
 
 In your graphql schema, define your :post and add
 
-elixir```
+```elixir
   use ReactAdminHelper
   query(name: "Query") do
     react_admin_query_schema(:post, :posts, Resolvers.Post)
