@@ -5,6 +5,12 @@ This helper assumes a graphql context containing %{current_user: %{is_admin: tru
 
 ## Usage
 
+In your Repo, to add pagiation, add Scrivener
+
+```elixir
+  use Scrivener
+```
+
 In your context created/modified by `mix phx.gen.context Post posts title` (in this example "Posts"), add 
 
 ```elixir
@@ -48,13 +54,14 @@ In your graphql schema, define your :post and add
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `react_admin_helper` to your list of dependencies in `mix.exs`:
+Add `react_admin_helper` and scrivener and scrivener_ecto to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [
-    {:react_admin_helper, "~> 0.1.0"}
+  [    
+    {:react_admin_helper, git: "git@github.com:terki/react-admin-helper.git"},
+    {:scrivener, "~> 2.5"},
+    {:scrivener_ecto, "~> 2.0.0"},
   ]
 end
 ```

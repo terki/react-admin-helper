@@ -13,12 +13,20 @@ defmodule ReactAdminHelper.ReactAdminHelper do
   defmacro react_admin_context(schema, table, repo) do
     quote do
       def unquote(:"count_#{table}")() do
-        Repo = unquote(repo)
-        {:ok, %{count: Repo.aggregate(unquote(schema), :count, :id)}}
+        {:ok,
+         %{
+           count:
+             unquote(
+               {{:., [],
+                 [
+                   repo,
+                   :aggregate
+                 ]}, [], [schema, :count, :id]}
+             )
+         }}
       end
 
       def unquote(:"list_paginated_#{table}")(args \\ %{}) do
-        Repo = unquote(repo)
         args = Map.put_new(args, :page, nil)
         args = Map.put_new(args, :per_page, nil)
         args = Map.put_new(args, :sort_field, "id")
@@ -59,7 +67,25 @@ defmodule ReactAdminHelper.ReactAdminHelper do
 
         q = order_by(q, ^sort_args)
 
-        Repo.paginate(q, page: page, page_size: args.per_page)
+        unquote(
+          {{:., [],
+            [
+              repo,
+              :paginate
+            ]}, [],
+           [
+             Macro.var(:q, __MODULE__),
+             [
+               page: Macro.var(:page, __MODULE__),
+               page_size:
+                 {{:., [],
+                   [
+                     Macro.var(:args, __MODULE__),
+                     :per_page
+                   ]}, [], []}
+             ]
+           ]}
+        )
       end
     end
   end
