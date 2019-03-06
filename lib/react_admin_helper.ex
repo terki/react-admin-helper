@@ -61,9 +61,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
             :asc -> {:asc, sort_field_atom}
           end
 
-        q = unquote(schema)
-
-        IO.inspect(args.filter, label: "args.filter")
+        q = unquote(schema)      
 
         # conditions = dynamic([q], q.id == 1)
         conditions = Enum.reduce(args.filter, true, fn {key, val}, conditions -> dynamic([t], field(t,^key) == ^val and ^conditions) end)
