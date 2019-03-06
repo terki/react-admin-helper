@@ -65,9 +65,9 @@ defmodule ReactAdminHelper.ReactAdminHelper do
 
         # q = where(q, [u], u.id in ^args.filter.ids or ^Enum.empty?(args.filter.ids) == true)
         q =
-        args.filter
-        |> Map.keys()
-        |> Enum.reduce(q, fn x, acc -> where(acc,[t], t[x] == ^args.filter[x]) end)
+          args.filter
+          |> Map.keys()
+          |> Enum.reduce(q, fn x, acc -> where(acc, ^dynamic([t], field(t,^x)) == ^args.filter[x]) end)
 
         q = order_by(q, ^sort_args)
 
