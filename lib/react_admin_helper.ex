@@ -31,9 +31,9 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         args = Map.put_new(args, :per_page, nil)
         args = Map.put_new(args, :sort_field, "id")
         args = Map.put_new(args, :sort_order, :asc)
-        args = Map.put_new(args, :filter, %{ids: []})
+        # args = Map.put_new(args, :filter, %{ids: []})
         filter = args.filter
-        filter = Map.put_new(filter, :ids, [])
+        # filter = Map.put_new(filter, :ids, [])
         args = Map.put(args, :filter, filter)
 
         page =
@@ -63,14 +63,15 @@ defmodule ReactAdminHelper.ReactAdminHelper do
 
         q = unquote(schema)
 
-        # q = where(q, [u], u.id in ^args.filter.ids or ^Enum.empty?(args.filter.ids) == true)
-        q =
-          args.filter
-          |> Map.keys()
-          |> Enum.reduce(q, fn x, acc -> where(acc, ^dynamic([t], field(t,^x)) == ^args.filter[x]) end)
+        IO.inspect(args.filter, label: "args.filter")
+
+        # conditions = dynamic([q], q.id == 1)
+        conditions = Enum.reduce(args.filter, true, fn {key, val}, conditions -> dynamic([t], field(t,^key) == ^val and ^conditions) end)
+
+        q = where(q, ^conditions)
 
         q = order_by(q, ^sort_args)
-
+        result =
         unquote(
           {{:., [],
             [
@@ -90,6 +91,23 @@ defmodule ReactAdminHelper.ReactAdminHelper do
              ]
            ]}
         )
+
+        _without_scrivener = """
+        unquote(
+          {{:., [],
+            [
+              repo,
+              :all
+            ]}, [],
+           [
+             Macro.var(:q, __MODULE__),
+             []
+           ]
+          }
+        )
+        """
+        result
+
       end
     end
   end
@@ -177,7 +195,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       end
 
       def unquote(:"get_#{entity}")(_, _, _) do
-        not_authorized()
+        {:error, "Not authorized"}
       end
 
       def unquote(:"all_#{entities}")(_parent, args = %{}, %{
@@ -216,7 +234,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       end
 
       def unquote(:"all_#{entities}")(_, _, _) do
-        not_authorized()
+        {:error, "Not authorized"}
       end
 
       def unquote(:"_all_#{entities}_meta")(_parent, _args, %{
@@ -233,12 +251,9 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       end
 
       def unquote(:"_all_#{entities}_meta")(_, _, _) do
-        not_authorized()
-      end
-
-      defp not_authorized() do
         {:error, "Not authorized"}
       end
+
     end
   end
 
@@ -267,7 +282,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       end
 
       def unquote(:"create_#{entity}")(_, _, _) do
-        not_authorized()
+       {:error, "Not authorized"}
       end
 
       def unquote(:"update_#{entity}")(_parent, args = %{id: id}, %{
@@ -303,7 +318,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       end
 
       def unquote(:"update_#{entity}")(_, _, _) do
-        not_authorized()
+        {:error, "Not authorized"}
       end
 
       def unquote(:"delete_#{entity}")(_parent, %{id: id}, %{
@@ -330,7 +345,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       end
 
       def unquote(:"delete_#{entity}")(_, _, _) do
-        not_authorized()
+        {:error, "Not authorized"}
       end
     end
   end
