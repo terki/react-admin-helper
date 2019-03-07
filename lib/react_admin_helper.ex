@@ -61,11 +61,17 @@ defmodule ReactAdminHelper.ReactAdminHelper do
             :asc -> {:asc, sort_field_atom}
           end
 
-        q = unquote(schema)      
+        q = unquote(schema)
 
         # conditions = dynamic([q], q.id == 1)
-        conditions = Enum.reduce(args.filter, true, fn {key, val}, conditions -> dynamic([t], field(t,^key) == ^val and ^conditions) end)
-
+        conditions = Enum.reduce(args.filter, true, fn {key, val}, conditions ->
+          IO.inspect({key, val}, label: "key, val")
+            case {key, val} do
+              {:ids, [_|_]}  -> dynamic([t],field(t, :id) in ^val )
+              {:q, q} -> conditions # TODO by default iterate over all string columns in schema, generate light "fulltext" search?
+              _ -> dynamic([t], field(t,^key) == ^val and ^conditions)
+            end
+          end)
         q = where(q, ^conditions)
 
         q = order_by(q, ^sort_args)
