@@ -64,37 +64,40 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         q = unquote(schema)
 
         # conditions = dynamic([q], q.id == 1)
-        conditions = Enum.reduce(args.filter, true, fn {key, val}, conditions ->
-          IO.inspect({key, val}, label: "key, val")
+        conditions =
+          Enum.reduce(args.filter, true, fn {key, val}, conditions ->
             case {key, val} do
-              {:ids, [_|_]}  -> dynamic([t],field(t, :id) in ^val )
-              {:q, q} -> conditions # TODO by default iterate over all string columns in schema, generate light "fulltext" search?
-              _ -> dynamic([t], field(t,^key) == ^val and ^conditions)
+              {:ids, [_ | _]} -> dynamic([t], field(t, :id) in ^val)
+              # TODO by default iterate over all string columns in schema, generate light "fulltext" search?
+              {:q, q} -> conditions
+              _ -> dynamic([t], field(t, ^key) == ^val and ^conditions)
             end
           end)
+
         q = where(q, ^conditions)
 
         q = order_by(q, ^sort_args)
+
         result =
-        unquote(
-          {{:., [],
-            [
-              repo,
-              :paginate
-            ]}, [],
-           [
-             Macro.var(:q, __MODULE__),
+          unquote(
+            {{:., [],
+              [
+                repo,
+                :paginate
+              ]}, [],
              [
-               page: Macro.var(:page, __MODULE__),
-               page_size:
-                 {{:., [],
-                   [
-                     Macro.var(:args, __MODULE__),
-                     :per_page
-                   ]}, [], []}
-             ]
-           ]}
-        )
+               Macro.var(:q, __MODULE__),
+               [
+                 page: Macro.var(:page, __MODULE__),
+                 page_size:
+                   {{:., [],
+                     [
+                       Macro.var(:args, __MODULE__),
+                       :per_page
+                     ]}, [], []}
+               ]
+             ]}
+          )
 
         _without_scrivener = """
         unquote(
@@ -110,8 +113,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
           }
         )
         """
-        result
 
+        result
       end
     end
   end
@@ -257,7 +260,6 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       def unquote(:"_all_#{entities}_meta")(_, _, _) do
         {:error, "Not authorized"}
       end
-
     end
   end
 
@@ -286,7 +288,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       end
 
       def unquote(:"create_#{entity}")(_, _, _) do
-       {:error, "Not authorized"}
+        {:error, "Not authorized"}
       end
 
       def unquote(:"update_#{entity}")(_parent, args = %{id: id}, %{
