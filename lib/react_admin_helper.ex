@@ -182,11 +182,14 @@ defmodule ReactAdminHelper.ReactAdminHelper do
     end
   end
 
-  defmacro react_admin_query_resolver(entity, entities, context) do
+  defmacro react_admin_query_resolver(
+             entity,
+             entities,
+             context,
+             context_match \\ Macro.escape(%{context: %{current_user: %{is_admin: true}}})
+           ) do
     quote do
-      def unquote(:"get_#{entity}")(_parent, %{id: id}, %{
-            context: %{current_user: %{is_admin: true}}
-          }) do
+      def unquote(:"get_#{entity}")(_parent, %{id: id}, unquote(context_match)) do
         # an_entity = MyProjectCore.Accounts.get_alert!(id)
         # an_entity = MyProjectCore.Accounts.get_alert!(unquote(Macro.var(:id,__MODULE__)))
         an_entity =
@@ -205,9 +208,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
-      def unquote(:"all_#{entities}")(_parent, args = %{}, %{
-            context: %{current_user: %{is_admin: true}}
-          }) do
+      def unquote(:"all_#{entities}")(_parent, args = %{}, unquote(context_match)) do
         some_entities =
           case args do
             # %{filter: %{q: q}} ->
@@ -244,9 +245,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
-      def unquote(:"_all_#{entities}_meta")(_parent, _args, %{
-            context: %{current_user: %{is_admin: true}}
-          }) do
+      def unquote(:"_all_#{entities}_meta")(_parent, _args, unquote(context_match)) do
         # MyProjectCore.Accounts.count_alerts()
         unquote(
           {{:., [],
@@ -263,11 +262,14 @@ defmodule ReactAdminHelper.ReactAdminHelper do
     end
   end
 
-  defmacro react_admin_mutation_resolver(entity, _entities, context) do
+  defmacro react_admin_mutation_resolver(
+             entity,
+             _entities,
+             context,
+             context_match \\ Macro.escape(%{context: %{current_user: %{is_admin: true}}})
+           ) do
     quote do
-      def unquote(:"create_#{entity}")(_parent, args, %{
-            context: %{current_user: %{is_admin: true}}
-          }) do
+      def unquote(:"create_#{entity}")(_parent, args, unquote(context_match)) do
         with(
           {:ok, changeset} <-
             unquote(
@@ -291,9 +293,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
-      def unquote(:"update_#{entity}")(_parent, args = %{id: id}, %{
-            context: %{current_user: %{is_admin: true}}
-          }) do
+      def unquote(:"update_#{entity}")(_parent, args = %{id: id}, unquote(context_match)) do
         an_entity =
           unquote(
             {{:., [],
@@ -327,9 +327,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
-      def unquote(:"delete_#{entity}")(_parent, %{id: id}, %{
-            context: %{current_user: %{is_admin: true}}
-          }) do
+      def unquote(:"delete_#{entity}")(_parent, %{id: id}, unquote(context_match)) do
         # Mqtt.notify_blacklist_update()
 
         an_entity =

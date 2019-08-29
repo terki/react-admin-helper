@@ -1,7 +1,8 @@
 # ReactAdminHelper
 
 Provides convenience macros for bootstrapping React Admin compatible GraphQL APIs via ra-data-graphql-simple.
-This helper assumes a graphql context containing %{current_user: %{is_admin: true} is set for valid admin users.
+
+This helper assumes by default a graphql context containing %{current_user: %{is_admin: true} is set for valid admin users, but this can be overridden by providing another matching expression as the optional fourth argument to the resolver macros. To disable security completely you can provide %{} as this argument, matching every map as context.
 
 ## Usage
 
@@ -27,6 +28,7 @@ defmodule MyProjectCoreWeb.Resolvers.Post do
   react_admin_mutation_resolver(:post, :posts, MyProjectCore.Posts)
 end
 ```
+
 
 In your graphql schema, define your :post and add
 
@@ -63,6 +65,20 @@ def deps do
     {:scrivener, "~> 2.5"},
     {:scrivener_ecto, "~> 2.0.0"},
   ]
+end
+```
+
+## Advanced usage
+
+### Customize access control
+
+The default assumes the context argument to the resolver is a map that contains a context key with a value that matches %{current_user: %{is_admin: true}}. To customize, add the match expression as the fourth argument like so, here matching for current_user with is_root instead:
+
+```elixir
+defmodule MyProjectCoreWeb.Resolvers.Post do
+  use ReactAdminHelper.ReactAdminHelper
+  react_admin_query_resolver(:post, :posts, MyProjectCore.Posts, ‰{context: %{current_user: %{is_root: true}}})
+  react_admin_mutation_resolver(:post, :posts, MyProjectCore.Posts, %{context: %{current_user: %{is_root: true}}})
 end
 ```
 
