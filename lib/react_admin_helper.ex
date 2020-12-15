@@ -208,6 +208,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
+      defoverridable [{unquote(:"get_#{entity}"), 3}]
+
       def unquote(:"all_#{entities}")(_parent, args = %{}, unquote(context_match)) do
         some_entities =
           case args do
@@ -245,6 +247,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
+      defoverridable [{unquote(:"all_#{entities}"), 3}]
+
       def unquote(:"_all_#{entities}_meta")(_parent, _args, unquote(context_match)) do
         # MyProjectCore.Accounts.count_alerts()
         unquote(
@@ -259,6 +263,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       def unquote(:"_all_#{entities}_meta")(_, _, _) do
         {:error, "Not authorized"}
       end
+
+      defoverridable [{unquote(:"_all_#{entities}_meta"), 3}]
     end
   end
 
