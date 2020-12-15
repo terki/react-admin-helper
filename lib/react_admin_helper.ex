@@ -34,7 +34,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         args = Map.put_new(args, :sort_field, "id")
         args = Map.put_new(args, :sort_order, :asc)
         # args = Map.put_new(args, :filter, %{ids: []})
-        filter = args.filter
+        filter = args[:filter] || %{}
         # filter = Map.put_new(filter, :ids, [])
         args = Map.put(args, :filter, filter)
 
@@ -43,6 +43,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
             nil -> nil
             argspage -> argspage + 1
           end
+
+        per_page = args.per_page
 
         sort_field_atom =
           case args.sort_field do
@@ -91,12 +93,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
                Macro.var(:q, __MODULE__),
                [
                  page: Macro.var(:page, __MODULE__),
-                 page_size:
-                   {{:., [],
-                     [
-                       Macro.var(:args, __MODULE__),
-                       :per_page
-                     ]}, [], []}
+                 page_size: Macro.var(:per_page, __MODULE__)
                ]
              ]}
           )
