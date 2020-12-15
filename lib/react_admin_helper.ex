@@ -26,6 +26,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
          }}
       end
 
+      defoverridable [{unquote(:"count_#{table}"), 0}]
+
       def unquote(:"list_paginated_#{table}")(args \\ %{}) do
         args = Map.put_new(args, :page, nil)
         args = Map.put_new(args, :per_page, nil)
@@ -116,6 +118,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
 
         result
       end
+
+      defoverridable [{unquote(:"list_paginated_#{table}"), 1}]
     end
   end
 
@@ -299,6 +303,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
+      defoverridable [{unquote(:"create_#{entity}"), 3}]
+
       def unquote(:"update_#{entity}")(_parent, args = %{id: id}, unquote(context_match)) do
         an_entity =
           unquote(
@@ -333,6 +339,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         {:error, "Not authorized"}
       end
 
+      defoverridable [{unquote(:"update_#{entity}"), 3}]
+
       def unquote(:"delete_#{entity}")(_parent, %{id: id}, unquote(context_match)) do
         # Mqtt.notify_blacklist_update()
 
@@ -357,6 +365,8 @@ defmodule ReactAdminHelper.ReactAdminHelper do
       def unquote(:"delete_#{entity}")(_, _, _) do
         {:error, "Not authorized"}
       end
+
+      defoverridable [{unquote(:"delete_#{entity}"), 3}]
     end
   end
 end

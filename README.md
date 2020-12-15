@@ -6,7 +6,7 @@ This helper assumes by default a graphql context containing %{current_user: %{is
 
 ## Usage
 
-In your Repo, to add pagiation, add Scrivener
+In your Repo, to add pagination, add Scrivener
 
 ```elixir
   use Scrivener
@@ -81,6 +81,8 @@ defmodule MyProjectCoreWeb.Resolvers.Post do
   react_admin_mutation_resolver(:post, :posts, MyProjectCore.Posts, %{context: %{current_user: %{is_root: true}}})
 end
 ```
+
+To override generated methods with a custom implementation, implement them below the macro call.
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
