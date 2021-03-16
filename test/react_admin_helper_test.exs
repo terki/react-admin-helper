@@ -1,4 +1,4 @@
 defmodule ReactAdminHelperTest do
   use ExUnit.Case
-  doctest ReactAdminHelper
+  doctest ReactAdminHelper.ReactAdminHelper
 end

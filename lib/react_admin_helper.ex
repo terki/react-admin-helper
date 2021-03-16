@@ -37,6 +37,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
         filter = args[:filter] || %{}
         # filter = Map.put_new(filter, :ids, [])
         args = Map.put(args, :filter, filter)
+        ids_count = filter[:ids] && length(filter[:ids])
 
         page =
           case args.page do
@@ -44,7 +45,7 @@ defmodule ReactAdminHelper.ReactAdminHelper do
             argspage -> argspage + 1
           end
 
-        per_page = args.per_page
+        per_page = args.per_page || ids_count
 
         sort_field_atom =
           case args.sort_field do
